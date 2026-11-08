@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The 7 Sacred Diyas ✨ | Aayush Singh</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Playfair+Display:ital,wght@0,600;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 30%, #170727 0%, #0c0416 60%, #030107 100%);
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      padding: 24px 16px 40px;
+      position: relative;
+      transition: background 1.5s ease;
+    }
+
+    /* Ambient & Touch Canvas */
+    canvas#sparkCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Sound Control Pill */
+    .audio-pill {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      color: #fde68a;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+
+    .app-container {
+      position: relative;
+      z-index: 2;
+      max-width: 540px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    /* Top Badges */
+    .header-badges {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .festival-tag {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      color: #fbbf24;
+      background: rgba(251, 191, 36, 0.12);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      padding: 6px 18px;
+      border-radius: 999px;
+      backdrop-filter: blur(8px);
+    }
+
+    .community-pill {
+      font-size: 11px;
+      color: #fef08a;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px dashed rgba(251, 191, 36, 0.35);
+      padding: 4px 14px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .main-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 26px;
+      font-weight: 900;
+      background: linear-gradient(180deg, #fffbeb 0%, #fde68a 50%, #d97706 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+
+    .recipient-sub {
+      font-size: 13px;
+      color: #fcd34d;
+      margin-bottom: 14px;
+    }
+
+    .instruction-text {
+      font-size: 13px;
+      color: rgba(254, 240, 138, 0.85);
+      margin-bottom: 18px;
+    }
+
+    /* Dynamic Message Banner for Each Pillar */
+    .pillar-banner {
+      min-height: 54px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(251, 191, 36, 0.22);
+      border-radius: 14px;
+      padding: 10px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 22px;
+      backdrop-filter: blur(12px);
+      transition: all 0.4s ease;
+    }
+
+    .pillar-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fef08a;
+      letter-spacing: 0.5px;
+    }
+
+    .pillar-desc {
+      font-size: 12px;
+      color: #e2e8f0;
+      margin-top: 2px;
+    }
+
+    /* Progress Dots */
+    .progress-dots {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      transition: all 0.4s ease;
+    }
+
+    .dot.active {
+      background: #f59e0b;
+      box-shadow: 0 0 10px #f59e0b, 0 0 20px #d97706;
+      transform: scale(1.2);
+    }
+
+    /* Circular Altar Ring */
+    .altar-arena {
+      position: relative;
+      width: 330px;
+      height: 330px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .rangoli-border {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px dashed rgba(251, 191, 36, 0.25);
+      animation: slowRotate 70s linear infinite;
+    }
+
+    @keyframes slowRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .central-mandala-symbol {
+      position: absolute;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(251, 191, 36, 0.15) 0%, transparent 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      color: #fde68a;
+      opacity: 0.65;
+      transition: opacity 1s, transform 1s;
+    }
+
+    /* Diya Nodes */
+    .diya-node {
+      position: absolute;
+      width: 72px;
+      height: 82px;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .diya-node:hover {
+      transform: translate(-50%, -50%) scale(1.12);
+    }
+
+    .diya-aura {
+      position: absolute;
+      top: 2px;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 140, 0, 0.65) 0%, transparent 75%);
+      filter: blur(8px);
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      pointer-events: none;
+    }
+
+    .diya-node.lit .diya-aura {
+      opacity: 1;
+      animation: miniPulse 1.8s infinite alternate ease-in-out;
+    }
+
+    @keyframes miniPulse {
+      0% { transform: scale(0.9); opacity: 0.7; }
+      100% { transform: scale(1.3); opacity: 1; }
+    }
+
+    .diya-svg {
+      width: 50px;
+      height: 50px;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.7));
+    }
+
+    .flame-element {
+      opacity: 0;
+      transform-origin: 50% 85%;
+      transition: opacity 0.4s ease;
+    }
+
+    .diya-node.lit .flame-element {
+      opacity: 1;
+      animation: diyaFlicker 1.2s infinite alternate ease-in-out;
+    }
+
+    @keyframes diyaFlicker {
+      0% { transform: scale(1) rotate(-2deg); }
+      50% { transform: scale(1.1, 0.95) rotate(2deg); }
+      100% { transform: scale(0.95, 1.05) rotate(-1deg); }
+    }
+
+    /* Number Count Badge Below Each Diya */
+    .diya-count-badge {
+      margin-top: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fde68a;
+      background: rgba(18, 9, 30, 0.85);
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      border-radius: 999px;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    }
+
+    .diya-node.lit .diya-count-badge {
+      background: #f59e0b;
+      color: #1a0800;
+      border-color: #fef08a;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.85);
+      transform: scale(1.08);
+    }
+
+    /* Final Card */
+    .final-card {
+      display: none;
+      opacity: 0;
+      transform: translateY(20px);
+      background: rgba(25, 12, 40, 0.93);
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      border-radius: 24px;
+      padding: 34px 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(18px);
+      margin-top: 10px;
+      animation: revealCard 1s forwards cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes revealCard {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .final-gold-head {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 26px;
+      font-weight: 900;
+      background: linear-gradient(180deg, #fffbeb 0%, #fde68a 50%, #d97706 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+    }
+
+    .final-body {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #e2e8f0;
+      margin-bottom: 24px;
+    }
+
+    .signature-area {
+      border-top: 1px solid rgba(251, 191, 36, 0.25);
+      padding-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .regards-text {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: rgba(254, 240, 138, 0.7);
+    }
+
+    .author-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 600;
+      font-style: italic;
+      color: #fef08a;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-relight {
+      margin-top: 22px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      color: #fde68a;
+      font-size: 12px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Ambient Audio Track -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2022/10/24/audio_338779b5c3.mp3?filename=indian-ambient-festive-124357.mp3" type="audio/mp3">
+  </audio>
+
+  <div class="audio-pill" id="audioToggle" onclick="toggleAudio()">
+    🔊 <span>Music On</span>
+  </div>
+
+  <canvas id="sparkCanvas"></canvas>
+
+  <div class="app-container">
+    <div class="header-badges">
+      <div class="festival-tag">TAMASO MA JYOTIRGAMAYA (तमसो मा ज्योतिर्गमय) ✨</div>
+      <div class="community-pill">
+        🪔 <span>Diya <strong>#<span id="visitorCountDisplay">108</span></strong> Lit with Aayush Singh</span>
+      </div>
+    </div>
+
+    <h1 class="main-title">THE 7 SACRED DIYAS</h1>
+    <div class="recipient-sub">Wishing <span id="recipientDisplay">You & Your Family</span></div>
+    <p class="instruction-text" id="guideText">Tap each Diya to awaken the foundational truths of Deepavali</p>
+
+    <div class="progress-dots" id="dotsContainer">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+
+    <div class="pillar-banner" id="pillarBanner">
+      <div class="pillar-name" id="bannerTitle">The Path of Illumination</div>
+      <div class="pillar-desc" id="bannerDesc">Touch a Diya to begin lighting the sacred mandala</div>
+    </div>
+
+    <div class="altar-arena" id="altar">
+      <div class="rangoli-border"></div>
+      <div class="central-mandala-symbol" id="centerIcon">🪔</div>
+    </div>
+
+    <div class="final-card" id="finalCard">
+      <div class="final-gold-head">ALL 7 DIYAS ARE LIT</div>
+      <p class="final-body">
+        Just as these seven flames illuminated this sanctuary, may the timeless values of Deepavali illuminate your path throughout the year. Wishing you, your team, and your family unbounded clarity, sound health, ethical prosperity, and remarkable milestones in every endeavor.
+      </p>
+
+      <div class="signature-area">
+        <span class="regards-text">Warm festive regards,</span>
+        <span class="author-name">Aayush Singh</span>
+      </div>
+
+      <button class="btn-relight" onclick="resetExperience()">🔄 Light Again</button>
+    </div>
+  </div>
+
+  <script>
+    // URL Parameter support for custom recipients (e.g., ?to=Infosys+Team)
+    try {
+      var urlParams = new URLSearchParams(window.location.search);
+      var toParam = urlParams.get('to');
+      if (toParam) {
+        document.getElementById('recipientDisplay').textContent = decodeURIComponent(toParam);
+      }
+      
+      // Dynamic local counter increment if hosted statically on GitHub Pages
+      var storedCount = parseInt(localStorage.getItem('diwali_views_count') || '108', 10);
+      storedCount += 1;
+      localStorage.setItem('diwali_views_count', storedCount);
+      document.getElementById('visitorCountDisplay').textContent = storedCount;
+    } catch (e) {}
+
+    var PILLARS = [
+      { name: "1. Prakash (Light over Darkness)", desc: "The inner strength to dispel despair, uncertainty, and fear." },
+      { name: "2. Gyan (Wisdom over Ignorance)", desc: "The dawn of intellectual clarity and conscious decision-making." },
+      { name: "3. Shanti (Peace Amidst Chaos)", desc: "Grounded harmony of mind, heart, and soul in everyday endeavors." },
+      { name: "4. Samriddhi (Ethical Abundance)", desc: "True prosperity earned through integrity, competence, and service." },
+      { name: "5. Seva (Gratitude & Giving)", desc: "The selfless joy of sharing our blessings and uplifting those around us." },
+      { name: "6. Sankalp (Renewal of Purpose)", desc: "Sweeping away the past to embark on bold, focused new journeys." },
+      { name: "7. Ekta (Togetherness & Unity)", desc: "The shared light that binds families, teams, and communities as one." }
+    ];
+
+    var NOTES = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88];
+    var audioCtx = null;
+    var music = document.getElementById('bgMusic');
+    var isPlaying = false;
+
+    function playNote(index) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        var osc = audioCtx.createOscillator();
+        var gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(NOTES[index] || 440, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.2, audioCtx.currentTime + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.2);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 1.2);
+      } catch (e) {}
+    }
+
+    function playFinaleChord() {
+      var finaleNotes = [261.63, 329.63, 392.00, 523.25];
+      finaleNotes.forEach(function(freq, i) {
+        setTimeout(function() {
+          try {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            var osc = audioCtx.createOscillator();
+            var gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.18, audioCtx.currentTime + 0.04);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 2.5);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 2.5);
+          } catch (e) {}
+        }, i * 140);
+      });
+    }
+
+    function toggleAudio() {
+      var btn = document.getElementById('audioToggle');
+      if (isPlaying) {
+        music.pause();
+        isPlaying = false;
+        btn.innerHTML = '🔇 <span>Music Off</span>';
+      } else {
+        music.play().catch(function(){});
+        isPlaying = true;
+        btn.innerHTML = '🔊 <span>Music On</span>';
+      }
+    }
+
+    var altar = document.getElementById('altar');
+    var dots = document.querySelectorAll('.dot');
+    var litCount = 0;
+
+    function setupDiyas() {
+      altar.querySelectorAll('.diya-node').forEach(function(el){ el.remove(); });
+      litCount = 0;
+
+      var radius = 120;
+      var cx = 165;
+      var cy = 165;
+
+      for (var i = 0; i < 7; i++) {
+        var angle = (i * (360 / 7) - 90) * (Math.PI / 180);
+        var x = cx + radius * Math.cos(angle);
+        var y = cy + radius * Math.sin(angle);
+
+        var node = document.createElement('div');
+        node.className = 'diya-node';
+        node.style.left = x + 'px';
+        node.style.top = y + 'px';
+        node.dataset.index = i;
+
+        node.innerHTML = `
+          <div class="diya-aura"></div>
+          <svg class="diya-svg" viewBox="0 0 100 100" fill="none">
+            <ellipse cx="50" cy="76" rx="34" ry="7" fill="rgba(0,0,0,0.5)" />
+            <path d="M12 55 C12 78 88 78 88 55 C88 50 78 48 50 48 C22 48 12 50 12 55 Z" fill="url(#clay_${i})"/>
+            <ellipse cx="50" cy="54" rx="35" ry="5" fill="#782305"/>
+            <g class="flame-element">
+              <path d="M50 16 C42 30 36 41 36 52 C36 60 42 64 50 64 C58 64 64 60 64 52 C64 41 58 30 50 16 Z" fill="url(#fire_${i})"/>
+              <path d="M50 28 C45 38 41 45 41 53 C41 58 45 61 50 61 C55 61 59 58 59 53 C59 45 55 38 50 28 Z" fill="#ffffff"/>
+            </g>
+            <defs>
+              <linearGradient id="clay_${i}" x1="0%" y1="0%" x2="0%" y2="1">
+                <stop offset="0%" stop-color="#ea580c"/>
+                <stop offset="100%" stop-color="#431407"/>
+              </linearGradient>
+              <linearGradient id="fire_${i}" x1="0%" y1="0%" x2="0%" y2="1">
+                <stop offset="0%" stop-color="#fef08a"/>
+                <stop offset="50%" stop-color="#f59e0b"/>
+                <stop offset="100%" stop-color="#dc2626"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="diya-count-badge">${i + 1}</div>
+        `;
+
+        node.addEventListener('click', onDiyaClick);
+        altar.appendChild(node);
+      }
+    }
+
+    function onDiyaClick(e) {
+      var node = e.currentTarget;
+      if (node.classList.contains('lit')) return;
+
+      if (!isPlaying) {
+        music.play().then(function() { isPlaying = true; }).catch(function(){});
+      }
+
+      if (navigator.vibrate) {
+        navigator.vibrate(35);
+      }
+
+      var idx = parseInt(node.dataset.index, 10);
+      node.classList.add('lit');
+      litCount++;
+
+      playNote(idx);
+      var rect = node.getBoundingClientRect();
+      spawnSparkBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, 28);
+
+      dots[idx].classList.add('active');
+      document.getElementById('bannerTitle').textContent = PILLARS[idx].name;
+      document.getElementById('bannerDesc').textContent = PILLARS[idx].desc;
+
+      document.body.style.background = `radial-gradient(circle at 50% 30%, rgb(${23 + litCount*6}, ${7 + litCount*3}, ${39 + litCount*2}) 0%, #0c0416 65%, #030107 100%)`;
+
+      if (litCount === 7) {
+        triggerGrandFinale();
+      }
+    }
+
+    function triggerGrandFinale() {
+      playFinaleChord();
+      if (navigator.vibrate) {
+        navigator.vibrate([60, 50, 60, 50, 100]);
+      }
+
+      document.getElementById('guideText').textContent = "All 7 Lights Awakened ✨";
+      document.getElementById('centerIcon').style.opacity = '1';
+      document.getElementById('centerIcon').style.transform = 'scale(1.3)';
+      document.getElementById('centerIcon').textContent = '🪔✨';
+
+      for (var k = 0; k < 6; k++) {
+        setTimeout(function() {
+          spawnSparkBurst(
+            window.innerWidth * (0.2 + Math.random() * 0.6),
+            window.innerHeight * (0.15 + Math.random() * 0.35),
+            50
+          );
+        }, k * 350);
+      }
+
+      setTimeout(function() {
+        var card = document.getElementById('finalCard');
+        card.style.display = 'block';
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 900);
+    }
+
+    function resetExperience() {
+      litCount = 0;
+      dots.forEach(function(d){ d.classList.remove('active'); });
+      document.getElementById('finalCard').style.display = 'none';
+      document.getElementById('guideText').textContent = "Tap each Diya to awaken the foundational truths of Deepavali";
+      document.getElementById('bannerTitle').textContent = "The Path of Illumination";
+      document.getElementById('bannerDesc').textContent = "Touch a Diya to begin lighting the sacred mandala";
+      document.getElementById('centerIcon').textContent = '🪔';
+      document.getElementById('centerIcon').style.transform = 'scale(1)';
+      document.body.style.background = 'radial-gradient(circle at 50% 30%, #170727 0%, #0c0416 60%, #030107 100%)';
+      setupDiyas();
+    }
+
+    // Sparkler Canvas (Touch Trail + Fireworks)
+    var canvas = document.getElementById('sparkCanvas');
+    var ctx = canvas.getContext('2d');
+    var particles = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function addSparkTrail(x, y) {
+      var colors = ['#fde047', '#fbbf24', '#f59e0b', '#ffa94d'];
+      for (var i = 0; i < 3; i++) {
+        particles.push({
+          x: x + (Math.random() - 0.5) * 8,
+          y: y + (Math.random() - 0.5) * 8,
+          vx: (Math.random() - 0.5) * 2,
+          vy: Math.random() * -1.5 - 0.5,
+          alpha: 1,
+          decay: Math.random() * 0.03 + 0.02,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          size: Math.random() * 2 + 1
+        });
+      }
+    }
+
+    window.addEventListener('pointermove', function(e) {
+      addSparkTrail(e.clientX, e.clientY);
+    });
+
+    function spawnSparkBurst(x, y, count) {
+      var colors = ['#f59e0b', '#fbbf24', '#fef08a', '#ef4444', '#10b981', '#38bdf8'];
+      for (var i = 0; i < count; i++) {
+        var angle = Math.random() * Math.PI * 2;
+        var speed = Math.random() * 4.5 + 1.2;
+        particles.push({
+          x: x,
+          y: y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          alpha: 1,
+          decay: Math.random() * 0.02 + 0.01,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          size: Math.random() * 2.5 + 1
+        });
+      }
+    }
+
+    function renderLoop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (var i = particles.length - 1; i >= 0; i--) {
+        var p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.035;
+        p.alpha -= p.decay;
+
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+
+        ctx.save();
+        ctx.globalAlpha = Math.max(p.alpha, 0);
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+      requestAnimationFrame(renderLoop);
+    }
+    requestAnimationFrame(renderLoop);
+
+    setupDiyas();
+  </script>
+</body>
+</html>
